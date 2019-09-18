@@ -1,0 +1,33 @@
+FROM python:3.7
+
+# Pythonのコーディング標準チェッカー
+# http://pylint.pycqa.org/en/latest/
+RUN python -m pip install pylint
+
+# インストールしたいLinuxコマンドを指定
+RUN apt update && apt-get install -y \
+  wget \
+  git \
+  curl
+
+#
+# VS Codeサーバー構築
+#
+WORKDIR /works/code-server
+RUN wget https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz
+RUN tar xzf code-server1.939-vsc1.33.1-linux-x64.tar.gz -C ./ --strip-components 1
+# インストールしたいVS Codeの拡張を指定
+RUN /works/code-server/code-server --install-extension \
+  ms-python.python \
+  joaompinto.asciidoctor-vscode \
+  jebbs.plantuml \
+  vscode-icons-team.vscode-icons
+
+
+WORKDIR /app
+COPY . /app
+RUN python -m pip install -r requirements.txt
+
+ENV PYTHONPATH=/app/src
+
+CMD ["python", "src/main.py"]

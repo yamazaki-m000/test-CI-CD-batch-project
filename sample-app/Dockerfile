@@ -6,4 +6,4 @@ RUN python -m pip install -r requirements.txt
 
 ENV PYTHONPATH=/app:/app/src
 
-CMD [ "python", "src/main.py" ]
+CMD ["python", "src/main.py"]
